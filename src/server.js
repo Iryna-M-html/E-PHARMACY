@@ -12,6 +12,7 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import productsRoutes from './routes/productsRoutes.js';
 import categoriesRoutes from './routes/categoriesRoutes.js';
+import statisticsRoutes from './routes/statisticsRoutes.js';
 
 // import historyFaultRoutes from './routes/historyFaultRoutes.js';
 
@@ -87,6 +88,7 @@ app.use(authRoutes);
 app.use(userRoutes);
 app.use(productsRoutes);
 app.use(categoriesRoutes);
+app.use(statisticsRoutes);
 
 // app.use(historyFaultRoutes);
 
