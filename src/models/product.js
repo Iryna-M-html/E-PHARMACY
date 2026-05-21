@@ -5,10 +5,9 @@ const productSchema = new Schema(
     name: { type: String, required: true },
     price: { type: Number, required: true },
     category: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
       required: true,
-      enum: ['Books', 'Electronics', 'Clothing', 'Other'],
-      default: 'Other',
     },
     image: {
       type: String,

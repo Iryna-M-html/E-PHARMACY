@@ -13,10 +13,7 @@ export const createProductSchema = {
     name: Joi.string().min(1).required(),
     price: Joi.number().required(),
     image: Joi.string().uri().trim(),
-    category: Joi.string()
-      .valid('Books', 'Electronics', 'Clothing', 'Other')
-      .default('Other')
-      .required(),
+    category: Joi.string().custom(objectIdValidator).required(),
     stock: Joi.number().required(),
     suppliers: Joi.string().min(1).required(),
   }),
@@ -28,9 +25,6 @@ export const updateProductSchema = {
     name: Joi.string().min(1).required(),
     price: Joi.number().required(),
     image: Joi.string().uri().trim(),
-    category: Joi.string()
-      .valid('Books', 'Electronics', 'Clothing', 'Other')
-      .default('Other')
-      .required(),
+    category: Joi.string().custom(objectIdValidator).required(),
   }).min(1),
 };

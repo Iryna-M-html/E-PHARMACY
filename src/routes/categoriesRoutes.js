@@ -11,7 +11,7 @@ import { createCategorySchema } from '../validations/categoriesValidation.js';
 
 const router = Router();
 
-router.get('/api/categories', getAllCategories);
+router.get('/categories', getAllCategories);
 router.post(
   '/categories',
   // authenticate,
