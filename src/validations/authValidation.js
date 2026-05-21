@@ -1,5 +1,4 @@
 import { Joi, Segments } from 'celebrate';
-import { STATUS } from '../constants/status.js';
 
 export const registerUserSchema = {
   [Segments.BODY]: Joi.object({
@@ -28,20 +27,6 @@ export const registerUserSchema = {
     }),
 
     avatar: Joi.string().allow('').default(''),
-
-    // personalCode тільки для операторів
-    personalCode: Joi.when('role', {
-      is: 'operator',
-      then: Joi.string()
-        .uppercase()
-        .regex(/^[A-Z]{2}\d{5}$/)
-        .required(),
-      otherwise: Joi.forbidden(),
-    }),
-
-    status: Joi.string()
-      .valid(...Object.values(STATUS))
-      .default(STATUS.ACTIVE),
   }),
 };
 

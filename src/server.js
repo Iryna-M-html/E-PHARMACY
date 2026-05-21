@@ -11,8 +11,7 @@ import helmet from 'helmet';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
-import historyFaultRoutes from './routes/historyFaultRoutes.js';
-import generatorsRoute from './routes/generatorsRoute.js';
+// import historyFaultRoutes from './routes/historyFaultRoutes.js';
 
 import { authenticate } from './middleware/authenticate.js';
 import AdminJS from 'adminjs';
@@ -85,8 +84,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(authRoutes);
 app.use(userRoutes);
 
-app.use(historyFaultRoutes);
-app.use(generatorsRoute);
+// app.use(historyFaultRoutes);
 
 app.use(notFoundHandler);
 app.use(errors());
