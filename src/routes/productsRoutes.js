@@ -22,7 +22,7 @@ const router = Router();
 
 router.get('/products', getAllProducts);
 // router.use('/products', authenticate);
-router.get('/products/productId', celebrate(productIdSchema), getProductById);
+router.get('/products/:productId', celebrate(productIdSchema), getProductById);
 router.post(
   '/shop/product/add',
   upload.single('image'),
