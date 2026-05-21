@@ -10,6 +10,7 @@ import { connectMongoDB } from './db/connectMongoDB.js';
 import helmet from 'helmet';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import productsRoutes from './routes/productsRoutes.js';
 
 // import historyFaultRoutes from './routes/historyFaultRoutes.js';
 
@@ -83,6 +84,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 //routes
 app.use(authRoutes);
 app.use(userRoutes);
+app.use(productsRoutes);
 
 // app.use(historyFaultRoutes);
 
