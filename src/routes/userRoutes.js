@@ -26,5 +26,6 @@ router.put(
 // router.get('/users', ctrlWrapper(getAllUsers));
 
 router.get('/users/me', authenticate, getUser);
+// router.get('/api/users/:userId', getUserProfile);
 
 export default router;
