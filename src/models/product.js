@@ -15,11 +15,13 @@ const productSchema = new Schema(
       trim: true,
     },
     description: { type: String },
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
+    stock: { type: Number, required: true },
+    suppliers: { type: String, required: true },
+    // userId: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: 'User',
+    //   required: true,
+    // },
     averageRate: { type: Number, default: 0 },
     feedbackCount: { type: Number, default: 0 },
   },

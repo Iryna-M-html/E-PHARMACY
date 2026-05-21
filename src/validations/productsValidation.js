@@ -17,6 +17,8 @@ export const createProductSchema = {
       .valid('Books', 'Electronics', 'Clothing', 'Other')
       .default('Other')
       .required(),
+    stock: Joi.number().required(),
+    suppliers: Joi.string().min(1).required(),
   }),
 };
 

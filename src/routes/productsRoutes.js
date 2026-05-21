@@ -16,7 +16,7 @@ import {
 import { celebrate } from 'celebrate';
 import { authenticate } from '../middleware/authenticate.js';
 import { upload } from '../middleware/multer.js';
-import { requireAdmin } from '../middleware/requireAdmin.js';
+// import { requireAdmin } from '../middleware/requireAdmin.js';
 
 const router = Router();
 
@@ -24,9 +24,9 @@ router.get('/products', getAllProducts);
 router.use('/products', authenticate);
 router.get('/products/productId', celebrate(productIdSchema), getProductById);
 router.post(
-  '/products',
+  '/shop/product/add',
   upload.single('image'),
-  requireAdmin,
+  // requireAdmin,
   celebrate(createProductSchema),
   createProduct,
 );
