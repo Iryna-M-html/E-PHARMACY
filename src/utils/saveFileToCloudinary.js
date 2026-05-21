@@ -24,3 +24,15 @@ export async function saveFileToCloudinary(buffer, folderName) {
     Readable.from(buffer).pipe(uploadStream);
   });
 }
+export async function deleteFileFromCloudinary(public_id) {
+  return new Promise((resolve, reject) =>
+    cloudinary.uploader.destroy(
+      public_id,
+      {
+        resource_type: 'image',
+        invalidate: true,
+      },
+      (err, result) => (err ? reject(err) : resolve(result)),
+    ),
+  );
+}

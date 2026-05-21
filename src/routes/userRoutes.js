@@ -3,7 +3,7 @@ import { authenticate } from '../middleware/authenticate.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   updateProfile,
-  getAllUsers,
+  // getAllUsers,
   getUser,
 } from '../controllers/userController.js';
 import { requireAdmin } from '../middleware/requireAdmin.js';
@@ -23,7 +23,7 @@ router.put(
   ctrlWrapper(updateProfile),
 );
 
-router.get('/users', ctrlWrapper(getAllUsers));
+// router.get('/users', ctrlWrapper(getAllUsers));
 
 router.get('/users/me', authenticate, getUser);
 
