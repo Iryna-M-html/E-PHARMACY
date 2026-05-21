@@ -6,8 +6,8 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'Role is required'],
       trim: true,
-      default: 'operator',
-      enum: ['operator', 'admin', 'manager', 'maintenanceWorker', 'safety'],
+      default: 'user',
+      enum: ['admin', 'user', 'owner'],
     },
     fullName: {
       type: String,
