@@ -2,9 +2,8 @@ import { Joi, Segments } from 'celebrate';
 
 export const registerUserSchema = {
   [Segments.BODY]: Joi.object({
-    role: Joi.string()
-      .valid('operator', 'admin', 'manager', 'maintenanceWorker', 'safety')
-      .required(),
+    role: Joi.string().valid('admin', 'owner', 'user').required(),
+    password: Joi.string().min(8).required(),
 
     fullName: Joi.string()
       .trim()
@@ -18,13 +17,6 @@ export const registerUserSchema = {
       }),
 
     email: Joi.string().email().required(),
-
-    // password тільки для НЕ операторів
-    password: Joi.when('role', {
-      is: 'operator',
-      then: Joi.forbidden(),
-      otherwise: Joi.string().min(8).required(),
-    }),
 
     avatar: Joi.string().allow('').default(''),
   }),
