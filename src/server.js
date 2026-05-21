@@ -11,6 +11,7 @@ import helmet from 'helmet';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import productsRoutes from './routes/productsRoutes.js';
+import categoriesRoutes from './routes/categoriesRoutes.js';
 
 // import historyFaultRoutes from './routes/historyFaultRoutes.js';
 
@@ -85,6 +86,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(authRoutes);
 app.use(userRoutes);
 app.use(productsRoutes);
+app.use(categoriesRoutes);
 
 // app.use(historyFaultRoutes);
 
