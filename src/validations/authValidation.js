@@ -4,7 +4,6 @@ export const registerUserSchema = {
   [Segments.BODY]: Joi.object({
     role: Joi.string().valid('admin', 'owner', 'user').required(),
     password: Joi.string().min(8).required(),
-
     fullName: Joi.string()
       .trim()
       .pattern(
@@ -15,16 +14,13 @@ export const registerUserSchema = {
         'string.pattern.base':
           'Full name must contain at least two words and only letters',
       }),
-
     email: Joi.string().email().required(),
-
     avatar: Joi.string().allow('').default(''),
   }),
 };
 
 export const loginUserSchema = {
   [Segments.BODY]: Joi.alternatives().try(
-    // Логін для операторів (без пароля)
     Joi.object({
       fullName: Joi.string()
         .trim()
@@ -36,11 +32,6 @@ export const loginUserSchema = {
           'string.pattern.base':
             'Full name must contain at least two words and only letters',
         }),
-
-      personalCode: Joi.string()
-        .uppercase()
-        .regex(/^[A-Z]{2}\d{5}$/)
-        .required(),
     }),
 
     // Логін для інших ролей (email + password)
