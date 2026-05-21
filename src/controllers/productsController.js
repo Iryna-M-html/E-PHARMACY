@@ -1,43 +1,80 @@
 import { Product } from '../models/product.js';
 import createHttpError from 'http-errors';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import mongoose from 'mongoose';
 
-export const getAllProducts = async (req, res) => {
-  const { page = 1, perPage = 5, search } = req.query;
-  const skip = (page - 1) * perPage;
-  const productsQuery = Product.find();
-  // const productsQuery = Product.find({ userId: req.user._id });
+const buildFilterConditions = (queryParams) => {
+  const { minPrice, maxPrice, category, search } = queryParams;
+  const filterConditions = [];
 
-  if (search) {
-    productsQuery.where({ $text: { $search: search } });
+  if (category) {
+    if (category.includes(',')) {
+      const categoryIds = category
+        .split(',')
+        .map((id) => id.trim())
+        .filter((id) => mongoose.Types.ObjectId.isValid(id));
+      if (categoryIds.length > 0) {
+        filterConditions.push({ category: { $in: categoryIds } });
+      }
+    } else if (mongoose.Types.ObjectId.isValid(category)) {
+      filterConditions.push({ category: category });
+    }
   }
 
-  const [totalItems, products] = await Promise.all([
-    productsQuery.clone().countDocuments(),
-    productsQuery.skip(skip).limit(perPage),
-  ]);
+  if (minPrice || maxPrice) {
+    const priceCondition = {};
+    if (minPrice) priceCondition.$gte = Number(minPrice);
+    if (maxPrice) priceCondition.$lte = Number(maxPrice);
+    filterConditions.push({ 'price.value': priceCondition });
 
-  const totalPages = Math.ceil(totalItems / perPage);
+    if (search) {
+      filterConditions.push({ name: { $regex: search, $options: 'i' } });
+    }
 
-  res.status(200).json({
-    page,
-    perPage,
-    totalItems,
-    totalPages,
-    products,
-  });
+    return filterConditions.length > 0 ? { $and: filterConditions } : {};
+  }
+};
+
+export const getAllProducts = async (req, res, next) => {
+  try {
+    const page = Number(req.query.page) || 1;
+    const perPage = Number(req.query.perPage) || 5;
+    const skip = (page - 1) * perPage;
+
+    const filters = buildFilterConditions(req.query);
+
+    const [totalItems, products] = await Promise.all([
+      Product.countDocuments(filters),
+      Product.find(filters).skip(skip).limit(perPage),
+    ]);
+
+    const totalPages = Math.ceil(totalItems / perPage);
+
+    res.status(200).json({
+      page,
+      perPage,
+      totalItems,
+      totalPages,
+      products,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getProductById = async (req, res) => {
   const { productId } = req.params;
-  const product = await Product.findOne({
-    _id: productId,
-    // userId: req.user._id,
-  });
+
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(400).json({ message: 'Invalid product ID format' });
+  }
+
+  const product = await Product.findById(productId);
 
   if (!product) {
     return res.status(404).json({ message: `Product not found` });
   }
+
   res.status(200).json(product);
 };
 
