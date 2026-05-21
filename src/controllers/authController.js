@@ -68,45 +68,16 @@ export const refreshUserSession = async (req, res, next) => {
 
 ///login
 export const loginUser = async (req, res, next) => {
-  const { fullName, email, personalCode, password } = req.body;
-  let user;
+  try {
+    const { email, password } = req.body;
 
-  // ---------- ЛОГІН ОПЕРАТОРА (без пароля) ----------
-  if (fullName && personalCode) {
-    user = await User.findOne({
-      fullName,
-      personalCode,
-      role: 'operator',
-    });
+    if (!email || !password) {
+      throw createHttpError(400, 'Email and password are required');
+    }
 
+    const user = await User.findOne({ email });
     if (!user) {
-      throw createHttpError(401, 'Operator not found');
-    }
-
-    if (user.status === 'deactivated') {
-      return res.status(403).json({ message: 'User is deactivated' });
-    }
-
-    await Session.deleteOne({ userId: user._id });
-    const newSession = await createSession(user._id);
-    setSessionCookies(res, newSession);
-
-    return res.status(200).json({
-      user,
-      mustChangePassword: false,
-    });
-  }
-
-  // ---------- ЛОГІН ІНШИХ РОЛЕЙ (email + password) ----------
-  if (email && password) {
-    user = await User.findOne({ email, role: { $ne: 'operator' } });
-
-    if (!user) {
-      throw createHttpError(401, 'User not found');
-    }
-
-    if (user.status === 'deactivated') {
-      return res.status(403).json({ message: 'User is deactivated' });
+      throw createHttpError(401, 'Invalid credentials');
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
@@ -118,42 +89,19 @@ export const loginUser = async (req, res, next) => {
     const newSession = await createSession(user._id);
     setSessionCookies(res, newSession);
 
-    res.status(200).json({
-      user,
-      mustChangePassword: user.isFirstLogin,
+    return res.status(200).json({
+      user: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role, // Здесь будет 'user', 'admin' или 'owner'
+      },
+      mustChangePassword: user.isFirstLogin || false,
     });
+  } catch (error) {
+    next(error);
   }
-
-  throw createHttpError(400, 'Invalid login payload');
 };
-
-// export const registerOperator = async (req, res) => {
-//   const {
-//     name,
-//     email,
-//     role = 'operator',
-//     personalCode,
-//     lastName,
-//     phone,
-//   } = req.body;
-
-//   const defaultPassword = '11111';
-
-//   const hashedPassword = await bcrypt.hash(defaultPassword, 10);
-
-//   const newUser = await User.create({
-//     name,
-//     email,
-//     role,
-//     personalCode,
-//     password: hashedPassword, // В базе будет хэш от "11111"
-//     isFirstLogin: true,
-//     lastName,
-//     phone,
-//   });
-
-//   res.status(201).json(newUser);
-// };
 
 export const logoutUser = async (req, res) => {
   const { sessionId } = req.cookies;

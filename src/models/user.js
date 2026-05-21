@@ -28,17 +28,6 @@ const userSchema = new Schema(
         return this.role !== 'operator';
       },
     },
-    personalCode: {
-      type: String,
-      required: function () {
-        return this.role === 'operator';
-      },
-      unique: true,
-      sparse: true, // Позволяет быть null для админов, но уникальным для операторов
-      trim: true,
-      uppercase: true,
-      match: [/^[A-Z]{2}\d{5}$/, 'Code must be in format OP00001'],
-    },
     avatar: {
       type: String,
       required: false,
